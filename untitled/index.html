@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flapy bird</title>
+</head>
+<body>
+<canvas id="canvas" width="288" height="512"></canvas>
+<script>
+        let canvas = document.getElementById("canvas");// to select canvas
+        let ctx=canvas.getContext("2d");// trả về hình ảnh
+        //load image
+        let bird = new Image() ;
+        let bg = new Image();
+        let fg = new Image();//front goround
+        let pipenorth = new Image();
+        let pinesouth = new Image();
+        //new Image() for object image luôn đi kèm với scr
+        bird.src="ghost.png";
+        bg.src="Jungle.jpg";
+        fg.src="ground_chopped.png";
+        pinesouth.src="pine.png";//muốn cho ảnh vào canvas phải lấy nguồn từ pngtree.com
+        pipenorth.src="pine.png";
+        //draw the image
+        let gap = 75 ;
+        let constant = pipenorth.height+gap;
+        let bX=10;
+        let bY=150;
+        let gravity=1;
+        //onkey down
+        document.addEventListener("keydown",moveup);
+        function moveup() {
+            bY-=20;
+            // làm cho bấm vào bàn phím nó sẽ nảy
+        }
+
+        //pine coordinate
+        //nhập dữ liểu mảng tương ứng với ống
+        let pine = [];
+        pine[0]={
+            x: canvas.width,
+            y: 0
+        }
+
+        //cập nhập trọng lượng cho ảnh
+        function draw() {
+            ctx.drawImage(bg,0,0);// vẽ hình
+            for (let i = 0; i < pine.length; i++) {
+                ctx.drawImage(pipenorth,pine[i].x,pine[i].y);
+                ctx.drawImage(pinesouth,pine[i].x,pine[i].y+constant,0,0);
+                pine[i].x--;
+                // làm mồi trường di chuyển đi lại
+                if (pine[i].x==125){
+                    pine.push({
+                        x: canvas.width,
+                        y: Math.floor(Math.random()*pipenorth.height)-pipenorth.height
+                    });
+                }
+            }
+            ctx.drawImage(fg,0,canvas.height-fg.height+130);
+            ctx.drawImage(bird,bX,bY,50,50);
+            bY+=gravity;
+            // làm cho nhân vật tự trôi xuống
+            requestAnimationFrame(draw);
+        }
+        draw()
+</script>
+</body>
+</html>
